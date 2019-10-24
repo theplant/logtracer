@@ -31,7 +31,7 @@ func ExampleNew_01() {
 	opentracing.SetGlobalTracer(tracer)
 
 	ctx := context.TODO()
-	ctx = log.Context(ctx, log.Default())
+	ctx = log.Context(ctx, log.Default().With("user", 42))
 
 	var span opentracing.Span
 	span, ctx = opentracing.StartSpanFromContext(ctx, "TestLogTracer")

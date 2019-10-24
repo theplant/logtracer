@@ -17,10 +17,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/theplant/appkit/log"
-
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/mocktracer"
+	"github.com/theplant/appkit/log"
 )
 
 type LogTracer struct {
@@ -63,6 +62,7 @@ func newMockSpan(t *LogTracer, name string, opts ...opentracing.StartSpanOption)
 	mtspan.SpanContext = mtspan.SpanContext.WithBaggageItem(operationBaggageKey, spanName)
 	r := &LogSpan{
 		MockSpan: *mtspan,
+		tracer:   t,
 	}
 
 	return r
@@ -71,6 +71,11 @@ func newMockSpan(t *LogTracer, name string, opts ...opentracing.StartSpanOption)
 type LogSpan struct {
 	ctx context.Context
 	mocktracer.MockSpan
+	tracer opentracing.Tracer
+}
+
+func (span LogSpan) Tracer() opentracing.Tracer {
+	return span.tracer
 }
 
 func (span LogSpan) Finish() {
